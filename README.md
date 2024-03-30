@@ -7,7 +7,7 @@
 <div align="center">
 
 
-  [![Stars](https://img.shields.io/github/stars/nooniebao/qavatar?label=stars)](https://github.com/Xposed-Modules-Repo/icu.insomnia.qavatar)
+  [![Stars](https://img.shields.io/github/stars/nooniebao/qavatar?label=stars)](https://github.com/nooniebao/qavatar)
   [![LSP%20Repo](https://img.shields.io/github/downloads/Xposed-Modules-Repo/icu.insomnia.qavatar/total?label=LSP%20Repo&labelColor=F48FB1)](https://github.com/Xposed-Modules-Repo/icu.insomnia.qavatar/releases)
 </div>
 

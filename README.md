@@ -17,6 +17,10 @@
 
 
 
+## 重要信息
+
+**请手动设置url为`https://avatar.corosy.com/`**
+
 
 
 ## 功能：
@@ -27,7 +31,7 @@
 
 - QAvatar always try to rename a img in the Dir to `nextTick.jpg` randomly，And rename the used as `timespam-Used.jpg`
 
-- 支持从指定URL下载图片到上述目录（URL如 https://avatar.insomnia.icu/）
+- 支持从指定URL下载图片到上述目录（URL如 ~~https://avatar.insomnia.icu/~~ (已变更为https://avatar.corosy.com/ )）
 
 - **如果你选择手动移入1:1 jpg，请确保移动后的文件具有正确的权限。如660**
 
@@ -48,6 +52,7 @@
 
 | phone        | API        | os              | Q_version          |
 | ------------ | ---------- | --------------- | ------------------ |
+| Mi 10 Ultra  | Android 11  | MIUI12.5 12.5.10 | QQ9.1.0           |
 | Mi 10 Ultra  | Android 11  | MIUI12.5 12.5.10 | QQ8.9.68           |
 | K40 pro      | Android 11  | MIUI12.5 12.5.8 | QQ8.9.68           |
 | Xiaomi Note3 | Android 11 | crDroid 7.21    | QQ9.0.17 \ QQ8.6.0 |

@@ -19,9 +19,16 @@
 
 ## 重要信息
 
-**请手动设置url为`https://avatar.corosy.com/`**
+**`https://avatar.insomnia.icu/`即将弃用, 请使用新的头像源**
 
 
+## 头像源
+- `https://avatar.corosy.com/`
+- `https://uglyavatar.corosy.com`
+
+> https://avatar.corosy.com/ 可以返回一张**远古的潮流头像**
+> 
+> https://uglyavatar.corosy.com/ 可以返回一张**丑陋头像**. 必须指出: 丑陋头像的生成依赖于[txstc55](https://github.com/txstc55)的项目[ugly-avatar](https://github.com/txstc55/ugly-avatar)
 
 ## 功能：
 

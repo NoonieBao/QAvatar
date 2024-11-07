@@ -4,15 +4,9 @@
 <h1>QAvatar</h1>
 <h2>自动更换QQ头像</h2>
 
-<<<<<<< HEAD
-RdAvatar always try to update `nextTick.jpg` in `/storage/emulated/0/Android/data/com.tencent.mobileqq/files/avatar/` as new QQ avatar
 
-You can Coping avatar files to the directory manually, or 
-Setting avatars url(Like https://avatar.insomnia.icu/) that RdAvatar will request automatically
-=======
 <div align="center">
 
->>>>>>> refs/remotes/origin/main
 
   [![Stars](https://img.shields.io/github/stars/nooniebao/qavatar?label=stars)](https://github.com/nooniebao/qavatar)
   [![LSP%20Repo](https://img.shields.io/github/downloads/Xposed-Modules-Repo/icu.insomnia.qavatar/total?label=LSP%20Repo&labelColor=F48FB1)](https://github.com/Xposed-Modules-Repo/icu.insomnia.qavatar/releases)
@@ -25,12 +19,10 @@ Setting avatars url(Like https://avatar.insomnia.icu/) that RdAvatar will reques
 
 
 ## 重要信息
+**若提示上传头像失败，请清除`/storage/emulated/0/Android/data/com.tencent.mobileqq/files/qavatar/`下的所有文件**
 
 **`https://avatar.insomnia.icu/`即将弃用, 请使用新的头像源**
 
-**请清除`/storage/emulated/0/Android/data/com.tencent.mobileqq/files/qavatar/`下的所有文件**
-
-**若提示上传头像失败，请清除`/storage/emulated/0/Android/data/com.tencent.mobileqq/files/qavatar/`下的所有文件**
 
 ## 头像源
 - `https://avatar.corosy.com/`

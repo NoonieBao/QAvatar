@@ -21,6 +21,8 @@
 
 **`https://avatar.insomnia.icu/`即将弃用, 请使用新的头像源**
 
+**请清除`/storage/emulated/0/Android/data/com.tencent.mobileqq/files/qavatar/`下的所有文件**
+
 **若提示上传头像失败，请清除`/storage/emulated/0/Android/data/com.tencent.mobileqq/files/qavatar/`下的所有文件**
 
 ## 头像源

@@ -330,7 +330,7 @@ public class Hookers {
                                             try {
                                                 constructor.setAccessible(true);
                                                 NearbyPeoplePhotoUploadProcessorInstance = constructor.newInstance(fileControllerIns, transferRequestIns);
-                                                XposedBridge.log(TAG + "创建对象 done" + NearbyPeoplePhotoUploadProcessorInstance.toString() + NearbyPeoplePhotoUploadProcessorInstance.getClass());
+                                                XposedBridge.log(TAG + "创建对象 done " + NearbyPeoplePhotoUploadProcessorInstance.toString() + NearbyPeoplePhotoUploadProcessorInstance.getClass());
 
                                             } catch (Exception e) {
                                                 XposedBridge.log(TAG + "init error " + e.getMessage());
@@ -343,25 +343,25 @@ public class Hookers {
 
                                         XposedBridge.log(TAG+NearbyPeoplePhotoUploadProcessorInstance);
 
-//                                        start.invoke(NearbyPeoplePhotoUploadProcessorInstance);
+                                        start.invoke(NearbyPeoplePhotoUploadProcessorInstance);
 
-                                        {
-                                            //inspect
-                                            try {
-                                                HashMap<String, Object> res0 = RefUtil.inspect(transferRequestClass, transferRequestIns);
-                                                XposedBridge.log(TAG + "transferRequestIns" + res0.toString());
-                                            } catch (Exception e) {
-                                                XposedBridge.log(TAG + e.getMessage());
-                                            }
-
-                                            try {
-                                                HashMap<String, Object> res1 = RefUtil.inspect(fileControllerClass, fileControllerIns);
-                                                XposedBridge.log(TAG + "fileControllerIns" + res1.toString());
-                                            } catch (Exception e) {
-                                                XposedBridge.log(TAG + e.getMessage());
-                                            }
-                                            XposedBridge.log(TAG + "mLocalPath0");
-                                        }
+//                                        {
+//                                            //inspect
+//                                            try {
+//                                                HashMap<String, Object> res0 = RefUtil.inspect(transferRequestClass, transferRequestIns);
+//                                                XposedBridge.log(TAG + "transferRequestIns" + res0.toString());
+//                                            } catch (Exception e) {
+//                                                XposedBridge.log(TAG + e.getMessage());
+//                                            }
+//
+//                                            try {
+//                                                HashMap<String, Object> res1 = RefUtil.inspect(fileControllerClass, fileControllerIns);
+//                                                XposedBridge.log(TAG + "fileControllerIns" + res1.toString());
+//                                            } catch (Exception e) {
+//                                                XposedBridge.log(TAG + e.getMessage());
+//                                            }
+//                                            XposedBridge.log(TAG + "mLocalPath0");
+//                                        }
                                         XposedBridge.log(TAG + "resultset-use" + instance.getAppInterface());
                                     } catch (Exception e) {
                                         XposedBridge.log(TAG + e.getMessage());

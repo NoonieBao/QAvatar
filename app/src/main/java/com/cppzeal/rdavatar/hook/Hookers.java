@@ -15,10 +15,13 @@ import com.cppzeal.rdavatar.data.Mp;
 import com.cppzeal.rdavatar.ui.NotificationHelper;
 import com.cppzeal.rdavatar.utils.RefUtil;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -46,7 +49,24 @@ public class Hookers {
     // 外部声明 TAG 变量
     final static String Tag = "MulDexHookRes " + HookEntry.TAG;
 
+
+    public static void log(String... args) {
+        XposedBridge.log(Arrays.toString(args));
+    }
+
+    public static void cacheHook(XC_LoadPackage.LoadPackageParam loadPackageParam) throws IllegalAccessException {
+        String TAG = "cacheHook ";
+
+
+        StringWriter stringWriter=new StringWriter();
+        Exception e = new Exception("error");
+        e.printStackTrace(new PrintWriter(stringWriter));
+
+        log(TAG, stringWriter.toString());
+    }
+
     public static void MulDexHookRes(XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
 
         final String TAG = "MulDexHookRes " + Tag;
         final Class<?>[] transFileControllerImpls = new Class<?>[1];
@@ -60,13 +80,39 @@ public class Hookers {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         super.beforeHookedMethod(param);
 
+
                         //classloader
                         Context context = (Context) param.args[0];
-                        ClassLoader classLoader = context.getClassLoader();
+                        ClassLoader classLoader = context.getClassLoader();// java.lang.BootClassLoader
+                        XposedBridge.log(TAG + classLoader);
 
-                        boolean b = Mp.shouldUpdate(context);
+                        try {
+                            // 获取ClassLoader中的"classes"字段，该字段是一个Hashtable，其中键是类名，值是Class对象
+                            Field[] declaredFields = classLoader.getClass().getDeclaredFields();
+                            for (Field declaredField : declaredFields) {
+                                XposedBridge.log(TAG +declaredField.getName());
+
+                            }
+                            XposedBridge.log(TAG +"declaredField.getName()");
+
+                            java.lang.reflect.Field classesField = ClassLoader.class.getDeclaredField("classes");
+                            classesField.setAccessible(true);
+
+                            // 获取Hashtable实例
+                            @SuppressWarnings("unchecked")
+                            java.util.Vector<Class<?>> classes = (java.util.Vector<Class<?>>) classesField.get(classLoader);
+
+                            // 打印每个加载的类
+                            for (Class<?> clazz : classes) {
+                                XposedBridge.log(TAG +clazz.getName());
+                            }
+                        } catch (NoSuchFieldException | IllegalAccessException e) {
+                            XposedBridge.log(TAG +e.getMessage());
+                        }
+
+
+                        boolean b = Mp.shouldUpdateNow(context);
                         if (!b) {
-                            XposedBridge.log(TAG + "noti");
                             try {
                                 long l = Mp.getLastUploadTime(context);
                                 Date date = new Date(l * 1000);
@@ -95,8 +141,8 @@ public class Hookers {
                             appInterfaceFactoryClasss[1] = XposedHelpers.findClassIfExists(
                                     CnAppInterfaceFactory0, classLoader);
                         }
-                        XposedBridge.log(TAG + "拿到了么？" + appInterfaceFactoryClasss[0]);
-                        XposedBridge.log(TAG + "拿到了么？" + appInterfaceFactoryClasss[1]);
+                        XposedBridge.log(TAG + "appInterfaceFactory?" + appInterfaceFactoryClasss[0]);
+                        XposedBridge.log(TAG + "appInterfaceFactory?" + appInterfaceFactoryClasss[1]);
 
                         if (transFileControllerImpls[0] == null) {
                             transFileControllerImpls[0] = XposedHelpers.findClassIfExists(
@@ -167,10 +213,34 @@ public class Hookers {
                                 if (args[1].equals(str)) {
                                     Storage instance = Storage.getInstance();
                                     if (instance.getAppInterface() == null) {
+                                        //判断账号
+//                                        try{
+//                                            Object out=null;
+//                                            for (Method method : result.getClass().getDeclaredMethods()) {
+//                                                XposedBridge.log(TAG + "Uin " +method.getName());
+//
+//                                                if(method.getName().contains("getCurrentAccountUin")){
+//                                                    method.setAccessible(true);
+//                                                    out= method.invoke(instance.getAppInterface());
+//                                                    XposedBridge.log(TAG + "Uin d " +out);
+//                                                    break;
+//                                                }
+//                                            }
+//                                            String targetAcc = Mp.getTargetAcc(context);
+//                                            XposedBridge.log(TAG + "Uin targetAcc" +targetAcc);
+//
+//                                            if(!out.toString().contains(targetAcc)){
+//                                                return;
+//                                            }
+//                                        }catch (Exception e){
+//                                            XposedBridge.log(TAG + "Uin targetAcc err" +e.getMessage());
+//
+//                                        }
+
+
                                         instance.setAppInterface(result);
                                         XposedBridge.log(TAG + "resultset 设置 " + result + " " + instance.getClass().getClassLoader().hashCode());
                                     }
-
                                 }
 
                             }
@@ -180,10 +250,10 @@ public class Hookers {
                                 () -> {
 
                                     try {
-                                        Thread.sleep(12 * 1000);
+                                        Thread.sleep(5 * 1000);
                                         Storage instance = Storage.getInstance();
                                         if (instance.getAppInterface() == null) {
-                                            XposedBridge.log(TAG + "getAppInterface null");
+                                            XposedBridge.log(TAG + "getAppInterface from cache failed");
                                             return;
                                         }
                                         Object transferRequestIns = null, fileControllerIns = null;
@@ -267,10 +337,13 @@ public class Hookers {
                                             }
                                         }
 
-                                        XposedBridge.log(TAG + NearbyPeoplePhotoUploadProcessorInstance);
+                                        XposedBridge.log(TAG+ "NearbyPeoplePhotoUploadProcessorInstance "+ NearbyPeoplePhotoUploadProcessorInstance.toString());
 
                                         Method start = NearbyPeoplePhotoUploadProcessor.getDeclaredMethod("start");
-                                        start.invoke(NearbyPeoplePhotoUploadProcessorInstance);
+
+                                        XposedBridge.log(TAG+NearbyPeoplePhotoUploadProcessorInstance);
+
+//                                        start.invoke(NearbyPeoplePhotoUploadProcessorInstance);
 
                                         {
                                             //inspect
@@ -343,17 +416,40 @@ public class Hookers {
 
                         }
 
+                        boolean q = Mp.needGetInfo(context);
+                        if (q){
+                            XposedBridge.log(TAG + "尝试拉取开发者通知");
+
+                            new Thread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    try {
+                                        String infoFromDev = FileDownloader.getInfoFromDev(context);
+                                        if(! infoFromDev.contains("error")){
+                                            Mp.onUpdateInfoFromDev(context);
+                                            Mp.saveInfoFromDev(context,infoFromDev);
+                                        }
+//                                        NotificationHelper.sendNotification(context, "InfoFromDev", "已下载一张图片");
+                                    } catch (Exception e) {
+                                        XposedBridge.log(TAG + "getInfoFromDev error" + e.getMessage());
+                                    }
+                                }
+                            }).start();
+                        } else {
+                            XposedBridge.log(TAG + "开发者信息冷却");
+
+                        }
+
                     }
                 });
     }
 
 
-
-
-
     public static void SettingHook(XC_LoadPackage.LoadPackageParam loadPackageParam) {
-
-        String TAG = "SettingHook ";
+        //寄生于QQ设置
+        final String TAG = "SettingHook ";
 
         final String CnQQSetting0 = "com.tencent.mobileqq.activity.QQSettingSettingActivity";
         final String KeyQQSetting0 = "FormSimpleItem";
@@ -361,8 +457,6 @@ public class Hookers {
         final String CnQQSetting1 = "com.tencent.mobileqq.activity.AccountManageActivity";
         final String KeyQQSetting1 = "QUISingleLineListItem";
 
-//        final String CnFormItemRelativeLayout = "com.tencent.mobileqq.widget.FormItemRelativeLayout";
-        XposedBridge.log(TAG + "doOnResume");
 
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class,
                 new XC_MethodHook() {
@@ -393,7 +487,6 @@ public class Hookers {
                         final Class<?> clazz = aClass;
 
 
-
                         XposedHelpers.findAndHookMethod(aClass, "doOnResume", new XC_MethodHook() {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -406,9 +499,8 @@ public class Hookers {
 
                                 for (Field declaredField : clazz.getDeclaredFields()) {
                                     XposedBridge.log(TAG + declaredField.getType() + " " + declaredField.getName());
-//                                    if (declaredField.getType().getName().equals(CnFormItemRelativeLayout)) {
                                     String name = declaredField.getType().getName();
-                                    if (name.contains(KeyQQSetting0) ||name.contains(KeyQQSetting1)) {
+                                    if (name.contains(KeyQQSetting0) || name.contains(KeyQQSetting1)) {
                                         XposedBridge.log(TAG + "found CnFormItemRelativeLayout");
                                         fields.add(declaredField);
                                     }
@@ -481,10 +573,8 @@ public class Hookers {
                         if (aClass == null) {
                             return;
                         }
-                        XposedBridge.log(TAG + "found");
 
                         String[] strings = {"i", "d", "w", "e"};
-                        XposedBridge.log(TAG + "t9416fcghjb");
 
                         for (String string : strings) {
                             XposedBridge.hookAllMethods(aClass, string, new XC_MethodHook() {

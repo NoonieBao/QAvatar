@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cppzeal.rdavatar.R;
@@ -79,7 +80,7 @@ public class SettingUi {
                     }
                 }
                 layoutView.setId(R.id.setting2Activity_mcHookTool);
-                RefUtil.invoke_virtual(layoutView, "setLeftText", "RdAvatar",
+                RefUtil.invoke_virtual(layoutView, "setLeftText", "QAvatar",
                         CharSequence.class);
                 RefUtil.invoke_virtual(layoutView, "setBgType", 2, int.class);
             }
@@ -109,15 +110,26 @@ public class SettingUi {
             layout.setPadding(48, 24, 48, 24); // 添加内边距增强可读性
 
             Button information = new Button(activity);
-            information.setText("关于");
+            information.setText("信息和帮助");
             information.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rdavatar.insomnia.icu/"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/NoonieBao/QAvatar"));
                 activity.startActivity(intent);
             });
 
             EditText updateFre = generateEditText(activity, "更新频率(s)", true);
             EditText downloadUrl = generateEditText(activity, "URL", false);
             EditText downloadFre = generateEditText(activity, "下载频率(s)", true);
+
+            TextView titleTextView = new TextView(activity);
+            titleTextView.setText("QAvatar");
+            titleTextView.setGravity(Gravity.CENTER); // 设置文本居中
+
+            TextView infoFromDevView = new TextView(activity);
+            infoFromDevView.setText(Mp.retrieveInfoFromSp(activity)+"\n刷新时间:"+Mp.getLastInfoTime(activity));
+
+
+//            CheckBox totalSwitch = new CheckBox(activity);
+//            totalSwitch.setText("总开关");
 
             CheckBox shouldDownload = new CheckBox(activity);
             shouldDownload.setText("自动下载");
@@ -141,14 +153,21 @@ public class SettingUi {
             autoDownloadWrapper.addView(downloadFre);
 
             updateFre.setText(String.valueOf(Mp.getUploadFre(activity)));
-            shouldDownload.setChecked(Mp.shouldDownload(activity));
+//            target.setText(String.valueOf(Mp.getTargetAcc(activity)));
+
             downloadUrl.setText(Mp.getDownloadUrl(activity));
             downloadFre.setText(String.valueOf(Mp.getDownloadFre(activity)));
-            shouldNotify.setChecked(Mp.shouldNotify(activity));
-            shouldToast.setChecked(Mp.shouldToast(activity));
+
+//            totalSwitch.setChecked(Mp.globalSwitch(activity));
+            shouldDownload.setChecked(Mp.downloadSwitch(activity));
+            shouldNotify.setChecked(Mp.notifySwitch(activity));
+            shouldToast.setChecked(Mp.toastSwitch(activity));
 
             setViewGroupsVisibility(shouldDownload.isChecked(), downloadUrl, downloadFre);
 
+            layout.addView(titleTextView);
+            layout.addView(infoFromDevView);
+//            layout.addView(totalSwitch);
             layout.addView(updateFre);
             layout.addView(autoDownloadWrapper);
             layout.addView(shouldNotify);
@@ -163,14 +182,23 @@ public class SettingUi {
                     Mp.saveUrl(activity, Mp.DOWNLOAD_URL, downloadUrl.getText().toString());
                     Mp.saveData(activity, Mp.DOWNLOAD_FRE, Long.valueOf(downloadFre.getText().toString()));
                     Mp.saveData(activity, Mp.UPLOAD_FRE, Long.valueOf(updateFre.getText().toString()));
+//                    Mp.saveData(activity, Mp.TARGRT_ACC, Long.valueOf(target.getText().toString()));
+
+//                    Mp.saveData(activity, Mp.GLOBAL_SWITCH, totalSwitch.isChecked());
                     Mp.saveData(activity, Mp.NOTIFY_SWITCH, shouldNotify.isChecked());
                     Mp.saveData(activity, Mp.TOAST_SWITCH, shouldToast.isChecked());
+
                     Toast.makeText(activity, "成功", Toast.LENGTH_SHORT).show();
                 }
             });
 
             builder.setView(layout);
             final Dialog dialog = builder.create();
+
+            // 设置对话框居中显示
+            WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+            layoutParams.gravity = Gravity.CENTER;
+            dialog.getWindow().setAttributes(layoutParams);
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

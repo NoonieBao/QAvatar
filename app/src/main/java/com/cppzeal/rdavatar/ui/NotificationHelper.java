@@ -19,13 +19,13 @@ public class NotificationHelper {
 
     public static void sendNotification(Context context, String title, String message) {
 
-        boolean bq = Mp.shouldToast(context);
+        boolean bq = Mp.toastSwitch(context);
         if (bq) {
             Toast toast = Toast.makeText(context, title + " " + message, Toast.LENGTH_SHORT);
             toast.show();
         }
 
-        boolean b = Mp.shouldNotify(context);
+        boolean b = Mp.notifySwitch(context);
         if (!b) {
             return;
         }

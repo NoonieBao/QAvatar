@@ -15,11 +15,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.cppzeal.rdavatar"
+        applicationId = "icu.insomnia.qavatar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0 b"
+        versionCode = 6
+        versionName = "2.0 a"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

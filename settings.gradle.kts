@@ -14,6 +14,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "RdAvatar"
+rootProject.name = "QAvatar"
 include(":app")
  

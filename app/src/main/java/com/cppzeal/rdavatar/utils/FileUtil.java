@@ -19,7 +19,7 @@ public class FileUtil {
     public static final String theUsedJpg ="Used.jpg";
     public static final String TAG = HookEntry.TAG;
 
-    final static String reDir="rdAvatar";
+    final static String reDir="qavatar";
 
     private static Context getContext(Object args) {
         if(args instanceof  Context){

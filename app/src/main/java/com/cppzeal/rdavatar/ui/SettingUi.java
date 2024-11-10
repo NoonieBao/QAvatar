@@ -32,7 +32,8 @@ import de.robv.android.xposed.XposedBridge;
 public class SettingUi {
 
 
-    static  final  String TAG="SettingUi ";
+    static final String TAG = "SettingUi ";
+
     private static CheckBox generateCheckBox(Context context, String text) {
         CheckBox checkBox = new CheckBox(context);
         checkBox.setText(text);
@@ -57,11 +58,11 @@ public class SettingUi {
 
         View childAt = viewGroup.getChildAt(viewGroup.getChildCount() - 1);
 
-        if(childAt.getId()== R.id.setting2Activity_mcHookTool){
-            XposedBridge.log(TAG+"无需重复添加设置控件");
+        if (childAt.getId() == R.id.setting2Activity_mcHookTool) {
+            XposedBridge.log(TAG + "无需重复添加设置控件");
             return;
-        }else {
-            XposedBridge.log(TAG+"go");
+        } else {
+            XposedBridge.log(TAG + "go");
 
         }
 
@@ -125,7 +126,7 @@ public class SettingUi {
             titleTextView.setGravity(Gravity.CENTER); // 设置文本居中
 
             TextView infoFromDevView = new TextView(activity);
-            infoFromDevView.setText(Mp.retrieveInfoFromSp(activity)+"\n刷新时间:"+Mp.getLastInfoTime(activity));
+            infoFromDevView.setText(Mp.getInfoFromDevFromSp(activity) + "\n刷新时间:" + Mp.getLastInfoTime(activity));
 
 
 //            CheckBox totalSwitch = new CheckBox(activity);
@@ -188,7 +189,7 @@ public class SettingUi {
                     Mp.saveData(activity, Mp.NOTIFY_SWITCH, shouldNotify.isChecked());
                     Mp.saveData(activity, Mp.TOAST_SWITCH, shouldToast.isChecked());
 
-                    Toast.makeText(activity, "成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "设置已保存", Toast.LENGTH_SHORT).show();
                 }
             });
 

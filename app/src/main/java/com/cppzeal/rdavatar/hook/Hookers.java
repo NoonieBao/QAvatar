@@ -13,7 +13,6 @@ import com.cppzeal.rdavatar.utils.FileDownloader;
 import com.cppzeal.rdavatar.utils.FileUtil;
 import com.cppzeal.rdavatar.data.Mp;
 import com.cppzeal.rdavatar.ui.NotificationHelper;
-import com.cppzeal.rdavatar.utils.RefUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -58,7 +56,7 @@ public class Hookers {
         String TAG = "cacheHook ";
 
 
-        StringWriter stringWriter=new StringWriter();
+        StringWriter stringWriter = new StringWriter();
         Exception e = new Exception("error");
         e.printStackTrace(new PrintWriter(stringWriter));
 
@@ -90,10 +88,10 @@ public class Hookers {
                             // 获取ClassLoader中的"classes"字段，该字段是一个Hashtable，其中键是类名，值是Class对象
                             Field[] declaredFields = classLoader.getClass().getDeclaredFields();
                             for (Field declaredField : declaredFields) {
-                                XposedBridge.log(TAG +declaredField.getName());
+                                XposedBridge.log(TAG + declaredField.getName());
 
                             }
-                            XposedBridge.log(TAG +"declaredField.getName()");
+                            XposedBridge.log(TAG + "declaredField.getName()");
 
                             java.lang.reflect.Field classesField = ClassLoader.class.getDeclaredField("classes");
                             classesField.setAccessible(true);
@@ -104,10 +102,10 @@ public class Hookers {
 
                             // 打印每个加载的类
                             for (Class<?> clazz : classes) {
-                                XposedBridge.log(TAG +clazz.getName());
+                                XposedBridge.log(TAG + clazz.getName());
                             }
                         } catch (NoSuchFieldException | IllegalAccessException e) {
-                            XposedBridge.log(TAG +e.getMessage());
+                            XposedBridge.log(TAG + e.getMessage());
                         }
 
 
@@ -337,11 +335,11 @@ public class Hookers {
                                             }
                                         }
 
-                                        XposedBridge.log(TAG+ "NearbyPeoplePhotoUploadProcessorInstance "+ NearbyPeoplePhotoUploadProcessorInstance.toString());
+                                        XposedBridge.log(TAG + "NearbyPeoplePhotoUploadProcessorInstance " + NearbyPeoplePhotoUploadProcessorInstance.toString());
 
                                         Method start = NearbyPeoplePhotoUploadProcessor.getDeclaredMethod("start");
 
-                                        XposedBridge.log(TAG+NearbyPeoplePhotoUploadProcessorInstance);
+                                        XposedBridge.log(TAG + NearbyPeoplePhotoUploadProcessorInstance);
 
                                         start.invoke(NearbyPeoplePhotoUploadProcessorInstance);
 
@@ -404,7 +402,7 @@ public class Hookers {
 
                                             try {
                                                 FileDownloader.downloadFile(context);
-                                                Mp.tryDownload(context);
+                                                Mp.onTryDownloading(context);
                                                 NotificationHelper.sendNotification(context, "Download", "已下载一张图片");
                                             } catch (Exception e) {
                                                 XposedBridge.log(TAG + "noti" + e.getMessage());
@@ -416,27 +414,26 @@ public class Hookers {
 
                         }
 
-                        boolean q = Mp.needGetInfo(context);
-                        if (q){
+                        boolean q = Mp.shouldRefreshInfo(context);
+                        if (q) {
                             XposedBridge.log(TAG + "尝试拉取开发者通知");
 
                             new Thread(
-                            new Runnable() {
-                                @Override
-                                public void run() {
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
 
-                                    try {
-                                        String infoFromDev = FileDownloader.getInfoFromDev(context);
-                                        if(! infoFromDev.contains("error")){
-                                            Mp.onUpdateInfoFromDev(context);
-                                            Mp.saveInfoFromDev(context,infoFromDev);
-                                        }
+                                            try {
+                                                String infoFromDev = FileDownloader.getInfoFromDev(context);
+                                                if (!infoFromDev.contains("error")) {
+                                                    Mp.onRetrievedInfoFromDev(context, infoFromDev);
+                                                }
 //                                        NotificationHelper.sendNotification(context, "InfoFromDev", "已下载一张图片");
-                                    } catch (Exception e) {
-                                        XposedBridge.log(TAG + "getInfoFromDev error" + e.getMessage());
-                                    }
-                                }
-                            }).start();
+                                            } catch (Exception e) {
+                                                XposedBridge.log(TAG + "getInfoFromDev error" + e.getMessage());
+                                            }
+                                        }
+                                    }).start();
                         } else {
                             XposedBridge.log(TAG + "开发者信息冷却");
 

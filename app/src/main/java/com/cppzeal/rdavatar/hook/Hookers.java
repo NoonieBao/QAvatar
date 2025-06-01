@@ -40,9 +40,7 @@ public class Hookers {
     static final String CnAppInterfaceFactory0 = "com.tencent.common.app.AppInterfaceFactory";
     static final String CnAppInterfaceFactory1 = "com.tencent.common.app.a";
 
-//https://bbs.kanxue.com/thread-225190.htm
-//https://forum.butian.net/share/2248
-//方法声明在那里就hook那里. 而不是一股脑地hook子类
+
 
     // 外部声明 TAG 变量
     final static String Tag = "MulDexHookRes " + HookEntry.TAG;
@@ -644,4 +642,69 @@ public class Hookers {
 
     }
 
+    public static void SettingHook9170(XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        String TAG = "SettingHook9170 ";
+
+        final String CnQQSetting1 = "com.tencent.mobileqq.account.fragment.AccountManagerFragment";
+        XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                        Context context = (Context) param.args[0];
+
+
+                        ClassLoader classLoader = context.getClassLoader();
+
+                        Class<?> aClass = XposedHelpers.findClassIfExists(CnQQSetting1, classLoader);
+                        if (aClass == null) {
+                            XposedBridge.log(TAG + "未发现ui入口");
+                            return;
+                        }
+
+
+                        Method onResume  =   XposedHelpers.findMethodBestMatch(aClass, "onResume");
+
+                        XC_MethodHook xcMethodHook = new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                super.afterHookedMethod(param);
+                                // 尝试唤起
+                                XposedBridge.log(TAG + "唤起ui");
+
+
+                                Class<?> clazz = param.thisObject.getClass();
+                                for (Method method : clazz.getMethods()) {
+                                    XposedBridge.log(TAG + method);
+                                }
+
+                                Method getContext = XposedHelpers.findMethodBestMatch(clazz, "getContext");
+                                Context context1 = (Context)getContext.invoke(param.thisObject);
+
+
+
+                                XposedBridge.log(TAG + context1);
+
+
+
+
+//                                // 创建模拟点击事件的View对象
+                                View mockView = new View(context1);
+                                mockView.setId(android.R.id.button1);  // 设置一个有效的ID
+
+                                View.OnClickListener onClickListener = SettingUi.getOnClickListener(context1);
+                                onClickListener.onClick(mockView); // 手动触发点击事件
+
+                                XposedBridge.log(TAG + "唤起ui ed");
+
+
+                            }
+                        };
+
+                        XposedBridge.hookMethod(onResume,xcMethodHook);
+
+                    }
+                }
+        );
+    }
 }

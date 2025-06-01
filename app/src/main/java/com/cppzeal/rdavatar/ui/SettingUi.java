@@ -99,130 +99,140 @@ public class SettingUi {
             ((LinearLayout) layoutView).setGravity(Gravity.CENTER); // 设置内容居中
         }
 
-        View.OnClickListener onClickListener = v -> {
-            // 创建对话框构建器
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        View.OnClickListener onClickListener = getOnClickListener(activity);
 
-            LinearLayout layout = new LinearLayout(activity);
-            layout.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setPadding(48, 24, 48, 24); // 添加内边距增强可读性
+        layoutView.setOnClickListener(onClickListener);
 
-            Button information = new Button(activity);
-            information.setText("信息和帮助");
-            information.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/NoonieBao/QAvatar"));
-                activity.startActivity(intent);
-            });
+        viewGroup.addView(layoutView);
 
-            EditText updateFre = generateEditText(activity, "更新频率(s)", true);
-            EditText downloadUrl = generateEditText(activity, "URL", false);
-            EditText downloadFre = generateEditText(activity, "下载频率(s)", true);
+    }
+    
+    public static View.OnClickListener getOnClickListener(Context activity){
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View viewwww) {
+                // 创建对话框构建器
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-            TextView titleTextView = new TextView(activity);
-            titleTextView.setText("QAvatar");
-            titleTextView.setGravity(Gravity.CENTER); // 设置文本居中
+                LinearLayout layout = new LinearLayout(activity);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setPadding(48, 24, 48, 24); // 添加内边距增强可读性
 
-            TextView infoFromDevView = new TextView(activity);
-            infoFromDevView.setText(Mp.getInfoFromDevFromSp(activity) + "\n刷新时间:" + Mp.getLastInfoTime(activity));
+                Button information = new Button(activity);
+                information.setText("信息和帮助");
+                information.setOnClickListener(view -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/NoonieBao/QAvatar"));
+                    activity.startActivity(intent);
+                });
+
+                EditText updateFre = generateEditText(activity, "更新频率(s)", true);
+                EditText downloadUrl = generateEditText(activity, "URL", false);
+                EditText downloadFre = generateEditText(activity, "下载频率(s)", true);
+
+                TextView titleTextView = new TextView(activity);
+                titleTextView.setText("QAvatar");
+                titleTextView.setGravity(Gravity.CENTER); // 设置文本居中
+
+                TextView infoFromDevView = new TextView(activity);
+                infoFromDevView.setText(Mp.getInfoFromDevFromSp(activity) + "\n刷新时间:" + Mp.getLastInfoTime(activity));
 
 
 //            CheckBox totalSwitch = new CheckBox(activity);
 //            totalSwitch.setText("总开关");
 
-            CheckBox shouldDownload = new CheckBox(activity);
-            shouldDownload.setText("自动下载");
+                CheckBox shouldDownload = new CheckBox(activity);
+                shouldDownload.setText("自动下载");
 
-            shouldDownload.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                setViewGroupsVisibility(isChecked, downloadUrl, downloadFre);
-            });
+                shouldDownload.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    setViewGroupsVisibility(isChecked, downloadUrl, downloadFre);
+                });
 
-            LinearLayout autoDownloadWrapper = new LinearLayout(activity);
-            autoDownloadWrapper.setOrientation(LinearLayout.VERTICAL);
-            autoDownloadWrapper.setBackgroundColor(Color.rgb(170, 187, 255)); // 设置为红色
+                LinearLayout autoDownloadWrapper = new LinearLayout(activity);
+                autoDownloadWrapper.setOrientation(LinearLayout.VERTICAL);
+                autoDownloadWrapper.setBackgroundColor(Color.rgb(170, 187, 255)); // 设置为红色
 
-            CheckBox shouldNotify = generateCheckBox(activity, "通知提醒");
-            CheckBox shouldToast = generateCheckBox(activity, "Toast提醒");
+                CheckBox shouldNotify = generateCheckBox(activity, "通知提醒");
+                CheckBox shouldToast = generateCheckBox(activity, "Toast提醒");
 
-            Button saveSetting = new Button(activity);
-            saveSetting.setText("保存设置");
+                Button saveSetting = new Button(activity);
+                saveSetting.setText("保存设置");
 
-            autoDownloadWrapper.addView(shouldDownload);
-            autoDownloadWrapper.addView(downloadUrl);
-            autoDownloadWrapper.addView(downloadFre);
+                autoDownloadWrapper.addView(shouldDownload);
+                autoDownloadWrapper.addView(downloadUrl);
+                autoDownloadWrapper.addView(downloadFre);
 
-            updateFre.setText(String.valueOf(Mp.getUploadFre(activity)));
+                updateFre.setText(String.valueOf(Mp.getUploadFre(activity)));
 //            target.setText(String.valueOf(Mp.getTargetAcc(activity)));
 
-            downloadUrl.setText(Mp.getDownloadUrl(activity));
-            downloadFre.setText(String.valueOf(Mp.getDownloadFre(activity)));
+                downloadUrl.setText(Mp.getDownloadUrl(activity));
+                downloadFre.setText(String.valueOf(Mp.getDownloadFre(activity)));
 
 //            totalSwitch.setChecked(Mp.globalSwitch(activity));
-            shouldDownload.setChecked(Mp.downloadSwitch(activity));
-            shouldNotify.setChecked(Mp.notifySwitch(activity));
-            shouldToast.setChecked(Mp.toastSwitch(activity));
+                shouldDownload.setChecked(Mp.downloadSwitch(activity));
+                shouldNotify.setChecked(Mp.notifySwitch(activity));
+                shouldToast.setChecked(Mp.toastSwitch(activity));
 
-            setViewGroupsVisibility(shouldDownload.isChecked(), downloadUrl, downloadFre);
+                setViewGroupsVisibility(shouldDownload.isChecked(), downloadUrl, downloadFre);
 
-            layout.addView(titleTextView);
-            layout.addView(infoFromDevView);
+                layout.addView(titleTextView);
+                layout.addView(infoFromDevView);
 //            layout.addView(totalSwitch);
-            layout.addView(updateFre);
-            layout.addView(autoDownloadWrapper);
-            layout.addView(shouldNotify);
-            layout.addView(shouldToast);
-            layout.addView(saveSetting);
-            layout.addView(information);
+                layout.addView(updateFre);
+                layout.addView(autoDownloadWrapper);
+                layout.addView(shouldNotify);
+                layout.addView(shouldToast);
+                layout.addView(saveSetting);
+                layout.addView(information);
 
-            saveSetting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Mp.saveData(activity, Mp.DOWNLOAD_SWITCH, shouldDownload.isChecked());
-                    Mp.saveUrl(activity, Mp.DOWNLOAD_URL, downloadUrl.getText().toString());
-                    Mp.saveData(activity, Mp.DOWNLOAD_FRE, Long.valueOf(downloadFre.getText().toString()));
-                    Mp.saveData(activity, Mp.UPLOAD_FRE, Long.valueOf(updateFre.getText().toString()));
+                saveSetting.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Mp.saveData(activity, Mp.DOWNLOAD_SWITCH, shouldDownload.isChecked());
+                        Mp.saveUrl(activity, Mp.DOWNLOAD_URL, downloadUrl.getText().toString());
+                        Mp.saveData(activity, Mp.DOWNLOAD_FRE, Long.valueOf(downloadFre.getText().toString()));
+                        Mp.saveData(activity, Mp.UPLOAD_FRE, Long.valueOf(updateFre.getText().toString()));
 //                    Mp.saveData(activity, Mp.TARGRT_ACC, Long.valueOf(target.getText().toString()));
 
 //                    Mp.saveData(activity, Mp.GLOBAL_SWITCH, totalSwitch.isChecked());
-                    Mp.saveData(activity, Mp.NOTIFY_SWITCH, shouldNotify.isChecked());
-                    Mp.saveData(activity, Mp.TOAST_SWITCH, shouldToast.isChecked());
+                        Mp.saveData(activity, Mp.NOTIFY_SWITCH, shouldNotify.isChecked());
+                        Mp.saveData(activity, Mp.TOAST_SWITCH, shouldToast.isChecked());
 
-                    Toast.makeText(activity, "设置已保存", Toast.LENGTH_SHORT).show();
-                }
-            });
+                        Toast.makeText(activity, "设置已保存", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-            builder.setView(layout);
-            final Dialog dialog = builder.create();
+                builder.setView(layout);
+                final Dialog dialog = builder.create();
 
-            // 设置对话框居中显示
-            WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-            layoutParams.gravity = Gravity.CENTER;
-            dialog.getWindow().setAttributes(layoutParams);
+                // 设置对话框居中显示
+                WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+                layoutParams.gravity = Gravity.CENTER;
+                dialog.getWindow().setAttributes(layoutParams);
 
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int widthPixels = displayMetrics.widthPixels;
-            int heightPixels = displayMetrics.heightPixels;
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                ((Activity) activity).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int widthPixels = displayMetrics.widthPixels;
+                int heightPixels = displayMetrics.heightPixels;
 
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialogInterface) {
-                    WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-                    layoutParams.copyFrom(dialog.getWindow().getAttributes());
-                    layoutParams.width = widthPixels; // 设置宽度为包裹内容
-                    layoutParams.height = heightPixels; // 设置高度为包裹内容
-                    dialog.getWindow().setAttributes(layoutParams);
-                }
-            });
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+                        layoutParams.width = widthPixels; // 设置宽度为包裹内容
+                        layoutParams.height = heightPixels; // 设置高度为包裹内容
+                        dialog.getWindow().setAttributes(layoutParams);
+                    }
+                });
 
-            dialog.show();
+                dialog.show();
+            }
         };
 
-        layoutView.setOnClickListener(onClickListener);
-
-        viewGroup.addView(layoutView);
+        return onClickListener;
 
     }
 
